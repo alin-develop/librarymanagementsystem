@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface BorrowedBooksRepository extends JpaRepository<BorrowedBooks, BorrowedBooksId> {
 
@@ -18,7 +19,7 @@ public interface BorrowedBooksRepository extends JpaRepository<BorrowedBooks, Bo
     @Query("SELECT x FROM BorrowedBooks x WHERE x.borrowedBooksId.bookId=?1 AND " +
             "x.borrowedBooksId.appUserId=?2 " +
             "AND x.returnedDate=null")
-    BorrowedBooks getBorrowedBook(Long bookId, Long appUserId);
+    Optional<BorrowedBooks> getBorrowedBook(Long bookId, Long appUserId);
 
     @Query("SELECT x FROM BorrowedBooks x WHERE x.borrowedBooksId.appUserId=?1 " +
             "AND x.returnedDate=null")

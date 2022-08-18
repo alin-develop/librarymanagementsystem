@@ -38,7 +38,8 @@ public class BorrowedBooksService {
     }
 
     public BorrowedBooks getBorrowedBook(Long bookId, Long appUserId){
-        return borrowedBooksRepository.getBorrowedBook(bookId, appUserId);
+        return borrowedBooksRepository.getBorrowedBook(bookId, appUserId).orElseThrow(()->
+                new BookNotBorrowedException(bookId, appUserId));
     }
 
     public BorrowedBooks borrowTheBook(@NonNull Long bookId, @NonNull Long appUserId) {
@@ -63,8 +64,8 @@ public class BorrowedBooksService {
         log.info("The amountAvailable variable updated.");
         log.info(newBorrowedBook.toString());
 
-        BorrowedBooks savedBook = borrowedBooksRepository.save(newBorrowedBook);
-        return savedBook;
+        borrowedBooksRepository.save(newBorrowedBook);
+        return newBorrowedBook;
     }
 
 
@@ -72,7 +73,7 @@ public class BorrowedBooksService {
         Book book = bookService.getBookById(bookId);
         appUserService.getAppUserById(appUserId);
         BorrowedBooks borrowedBook = this.getBorrowedBook(bookId, appUserId);
-        if (borrowedBook == null) throw new BookNotBorrowedException(bookId, appUserId);
+
         if (borrowedBook.getRenewable() > 0) {
             borrowedBook.setRenewable(borrowedBook.getRenewable()-1);
             borrowedBook.setEndDate(LocalDate.now().plusDays(book.getBorrowingPeriod()));
@@ -85,7 +86,6 @@ public class BorrowedBooksService {
         Book book = bookService.getBookById(bookId);
         appUserService.getAppUserById(appUserId);
         BorrowedBooks borrowedBook = this.getBorrowedBook(bookId, appUserId);
-        if (borrowedBook == null) throw new BookNotBorrowedException(bookId, appUserId);
 
         borrowedBook.setReturnedDate(LocalDate.now());
         borrowedBook.setRenewable(0);

@@ -10,6 +10,7 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,8 +24,7 @@ public class Book {
     @Id
     @SequenceGenerator(
             name = "book_sequence",
-            sequenceName = "book_sequence",
-            initialValue = 1
+            sequenceName = "book_sequence"
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
@@ -60,11 +60,11 @@ public class Book {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     @JsonIgnore
-    private List<Category> categories;
+    private List<Category> categories = new ArrayList<>();
 
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<BorrowedBooks> borrowedBooks;
+    private List<BorrowedBooks> borrowedBooks = new ArrayList<>();
 
 
     public Book(String isbn, String name, String author, Integer yearPublished, Integer totalAmount) {

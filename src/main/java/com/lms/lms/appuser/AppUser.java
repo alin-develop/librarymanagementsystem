@@ -62,7 +62,7 @@ public class AppUser implements UserDetails {
     @OneToMany(mappedBy = "appUser",
             fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<BorrowedBooks> borrowedBooks;
+    private List<BorrowedBooks> borrowedBooks = new ArrayList<>();
 
     public AppUser(String firstName, String lastName, String email, String password,
                    AppUserRole appUserRole) {

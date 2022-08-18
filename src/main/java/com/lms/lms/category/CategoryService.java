@@ -6,12 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class CategoryService {
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
     @Autowired
     public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
@@ -24,19 +27,19 @@ public class CategoryService {
     @Transactional
     public Category addCategory(Category category) {
        Optional<Category> categoryExists =
-               Optional.ofNullable(categoryRepository.findCategoryByNameAndParent(category.getName(), category.getParent()));
+               categoryRepository.findCategoryByNameAndParent(category.getName(), category.getParent());
        if (categoryExists.isPresent()) throw new CategoryExistsException(category.getId());
 
        if (category.getParent()!=null){
             category.getParent().addChild(category);
        }
 
-       if(category.getName().equalsIgnoreCase("All Categories")){
+       if (category.getName().equalsIgnoreCase("All Categories")){
            category.setParent(category);
        }
 
-
-       return categoryRepository.save(category);
+       categoryRepository.save(category);
+       return category;
     }
 
     public List<Category> findCategoryByName(String name){
@@ -65,7 +68,10 @@ public class CategoryService {
         if (children.contains(child)) throw new CategoryExistsException(childId);
 
         child.setParent(category);
-        category.addChild(child);
+        List<Category> newChildren = new ArrayList<>(children.size()+1);
+        newChildren.addAll(children);
+        newChildren.add(child);
+        category.setChildren(newChildren);
 
         return category;
     }

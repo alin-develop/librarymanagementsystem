@@ -32,7 +32,7 @@ public class BorrowedBooks {
     @Column(name = "returned_date") //When the book was actually returned
     private LocalDate returnedDate;
 
-    private Integer renewable;//how many times r left for renewal of the period
+    private Integer renewable = 2;//how many times are left for renewal of the period
 
     public BorrowedBooks(@NotNull BorrowedBooksId borrowedBooksId, AppUser appUser, Book book) {
         this.borrowedBooksId = borrowedBooksId;
@@ -41,7 +41,6 @@ public class BorrowedBooks {
         this.endDate = borrowedBooksId.getStartDate().plusDays(
                 book.getBorrowingPeriod()
         );
-        renewable = 2;
     }
 
     public void setAppUser(@NotNull AppUser appUser) {

@@ -39,10 +39,7 @@ public class PhotoService {
         log.info("Start of the new photo.");
 
         Book book = bookService.getBookById(bookId);
-        if (book == null || book.getId() == null) {
-            assert book != null;
-            throw new BookNotFoundException(book.getIsbn());
-        }
+
         //update photo attributes assigned to the book
         book.getPhoto().setUrl_large(photo.getUrl_large());
         book.getPhoto().setUrl_medium(photo.getUrl_medium());
