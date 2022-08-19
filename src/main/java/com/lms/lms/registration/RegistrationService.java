@@ -7,6 +7,7 @@ import com.lms.lms.email.EmailSender;
 import com.lms.lms.registration.confirmation.ConfirmationToken;
 import com.lms.lms.registration.confirmation.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class RegistrationService {
     private final AppUserService appUserService;
     private final ConfirmationTokenService confirmationTokenService;
@@ -27,6 +29,7 @@ public class RegistrationService {
     public Map<String, String> register(@NotNull RegistrationRequest request) throws AuthenticationFailedException {
 
         boolean isValid = emailValidator.test(request.getEmail());
+        log.info(String.valueOf(isValid));
         if (!isValid) throw new IllegalStateException("Email is not valid!");
 
         if(request.getName()==null || request.getName().isEmpty() || request.getSurname()==null || request.getSurname().isEmpty()
